@@ -1,0 +1,5 @@
+input_string = input("Введіть рядок: ")
+unique_chars = set(input_string)
+count_unique_chars = len(unique_chars)
+print(f'Кількість унікальних символів:', count_unique_chars)
+print(f'Символів більше 10 :', count_unique_chars > 10)
