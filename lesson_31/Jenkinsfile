@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker-compose build'
+            }
+        }
+        stage('Run Tests in Docker') {
+            steps {
+                script {
+                    try {
+                        sh 'docker-compose up --abort-on-container-exit --exit-code-from tests'
+                    } finally {
+                        sh 'docker-compose down'
+                    }
+                }
+            }
+        }
+        stage('Copy Test Results') {
+            steps {
+                sh 'docker cp $(docker-compose ps -q tests):/app/results.xml ./results.xml || true'
+            }
+        }
+        stage('Publish Test Results') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    junit 'results.xml'
+                }
+            }
+        }
+    }
+    post {
+        always {
+            emailext (
+                to: 'InsertYour@Mail.Here',
+                subject: "Jenkins Pipeline: Build ${currentBuild.fullDisplayName}",
+                body: "Build result: ${currentBuild.currentResult}"
+            )
+        }
+    }
+}
