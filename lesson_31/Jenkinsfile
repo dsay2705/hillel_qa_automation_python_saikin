@@ -9,23 +9,23 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh 'docker-compose build'
+                sh 'docker compose -f lesson_31/docker-compose.yaml build'
             }
         }
         stage('Run Tests in Docker') {
             steps {
                 script {
                     try {
-                        sh 'docker-compose up --abort-on-container-exit --exit-code-from tests'
+                        sh 'docker compose -f lesson_31/docker-compose.yaml up --abort-on-container-exit --exit-code-from tests'
                     } finally {
-                        sh 'docker-compose down'
+                        sh 'docker compose -f lesson_31/docker-compose.yaml down'
                     }
                 }
             }
         }
         stage('Copy Test Results') {
             steps {
-                sh 'docker cp $(docker-compose ps -q tests):/app/results.xml ./results.xml || true'
+                sh 'docker cp $(docker compose -f lesson_31/docker-compose.yaml ps -q tests):/app/results.xml ./results.xml || true'
             }
         }
         stage('Publish Test Results') {
