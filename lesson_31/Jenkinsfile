@@ -7,25 +7,21 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Build Docker Image') {
+        stage('Run Tests') {
             steps {
-                sh 'docker compose -f lesson_31/docker-compose.yaml build'
+                sh '''
+                    python3 -m venv venv
+                    source venv/bin/activate
+                    pip install -r lesson_31/requirements.txt
+                    pytest lesson_31/test_app.py --maxfail=1 --disable-warnings -v --junitxml=results.xml
+                '''
             }
         }
-        stage('Run Tests in Docker') {
+        stage('Publish Test Results') {
             steps {
-                script {
-                    try {
-                        sh 'docker compose -f lesson_31/docker-compose.yaml up --abort-on-container-exit --exit-code-from tests'
-                    } finally {
-                        sh 'docker compose -f lesson_31/docker-compose.yaml down'
-                    }
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    junit 'results.xml'
                 }
-            }
-        }
-        stage('Copy Test Results') {
-            steps {
-                sh 'docker cp $(docker compose -f lesson_31/docker-compose.yaml ps -q tests):/app/results.xml ./results.xml || true'
             }
         }
         stage('Publish Test Results') {
