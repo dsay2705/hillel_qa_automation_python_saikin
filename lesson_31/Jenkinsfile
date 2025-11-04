@@ -52,7 +52,7 @@ pip install allure-pytest'''
                 results: [[path: 'lesson_31/allure-results']]
             ])
             emailext (
-                to: 'saydanya@gmail.com',
+                to: 'karp74154@gmail.com',
                 from: 'saydanya@gmail.com',
                 subject: "Jenkins Pipeline: ${currentBuild.fullDisplayName} - ${currentBuild.currentResult}",
                 body: """Pipeline finished with status: ${currentBuild.currentResult}\nSee details at: ${env.BUILD_URL}"""
