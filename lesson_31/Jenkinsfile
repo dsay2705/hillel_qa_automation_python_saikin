@@ -33,9 +33,9 @@ pip install allure-pytest'''
         }
         stage('Run tests') {
             steps {
-                sh '''#!/bin/bash
-source venv/bin/activate
-pytest lesson_31/tests --maxfail=1 --disable-warnings --tb=short --alluredir=lesson_31/allure-results'''
+            sh '''#!/bin/bash
+    source venv/bin/activate
+    PYTHONPATH=$PYTHONPATH:/workspace/lesson_31 pytest lesson_31/tests --maxfail=1 --disable-warnings --tb=short --alluredir=lesson_31/allure-results'''
             }
         }
     }
