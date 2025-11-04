@@ -1,7 +1,2 @@
 pytest
 selenium
-pytest-xdist
-pytest-html
-pytest-mock
-python-dotenv
-dynaconf

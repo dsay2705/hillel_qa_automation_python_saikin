@@ -14,4 +14,4 @@ services:
     container_name: jenkins
     environment:
       - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/jenkins.yaml
-      - EMAIL_PASS=my-app-password
+      - EMAIL_PASS=yeoz-ksry-khyk-abcd
