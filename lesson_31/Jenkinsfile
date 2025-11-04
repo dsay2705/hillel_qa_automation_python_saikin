@@ -54,8 +54,8 @@ pip install allure-pytest'''
             emailext(
                 from: 'saydanya@gmail.com',
                 to: 'saydanya@gmail.com',
-                subject: "Test Email",
-                body: "This is a test."
+                subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
+                body: "Build completed successfully! Check details at ${env.BUILD_URL}"
             )
         }
     }
