@@ -25,13 +25,17 @@ python3 -m venv venv'''
         }
         stage('Install requirements') {
             steps {
-                sh 'pip3 install -r lesson_31/requirements.txt'
-                sh 'pip3 install allure-pytest'
+                sh '''#!/bin/bash
+source venv/bin/activate
+pip install -r lesson_31/requirements.txt
+pip install allure-pytest'''
             }
         }
         stage('Run tests') {
             steps {
-                sh 'pytest lesson_31/tests --maxfail=1 --disable-warnings --tb=short --alluredir=lesson_31/allure-results'
+                sh '''#!/bin/bash
+source venv/bin/activate
+pytest lesson_31/tests --maxfail=1 --disable-warnings --tb=short --alluredir=lesson_31/allure-results'''
             }
         }
     }
@@ -40,8 +44,10 @@ python3 -m venv venv'''
             junit '**/test-results.xml'
             archiveArtifacts artifacts: '**/test-results.xml', allowEmptyArchive: true
             script {
-                sh 'pip3 install allure-commandline --user || true'
-                sh '~/.local/bin/allure generate lesson_31/allure-results --clean -o lesson_31/allure-report || true'
+                sh '''#!/bin/bash
+source venv/bin/activate
+pip install allure-commandline || true
+allure generate lesson_31/allure-results --clean -o lesson_31/allure-report || true'''
             }
             archiveArtifacts artifacts: 'lesson_31/allure-report/**', allowEmptyArchive: true
             emailext (
