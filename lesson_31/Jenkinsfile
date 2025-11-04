@@ -36,7 +36,7 @@ pip install allure-pytest'''
                 sh '''#!/bin/bash
                 set -euxo pipefail
                 source venv/bin/activate
-                export PYTHONPATH=$PYTHONPATH:$(pwd)/lesson_31
+                export PYTHONPATH="${PYTHONPATH:-}:$(pwd)/lesson_31"
                 pytest lesson_31/tests --maxfail=1 --disable-warnings --tb=short --alluredir=lesson_31/allure-results
                 '''
             }
