@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+    
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Install dependencies') {
+            steps {
+                sh '''#!/bin/bash
+set -euxo pipefail
+apt-get update
+apt-get install -y chromium chromium-driver python3 python3-dev python3-pip python3.13-venv
+chromium --version
+chromedriver --version
+rm -rf venv
+python3 -m venv venv'''
+            }
+        }
+        stage('Install requirements') {
+            steps {
+                sh '''#!/bin/bash
+source venv/bin/activate
+pip install -r lesson_31/requirements.txt
+pip install allure-pytest'''
+            }
+        }
+        stage('Run tests') {
+            steps {
+                sh '''#!/bin/bash
+                set -euxo pipefail
+                source venv/bin/activate
+                export PYTHONPATH="${PYTHONPATH:-}:$(pwd)/lesson_31"
+                pytest lesson_31/tests --maxfail=1 --disable-warnings --tb=short --alluredir=lesson_31/allure-results --junitxml=lesson_31/test-results.xml
+                '''
+            }
+        }
+    }
+    post {
+        always {
+            junit '**/test-results.xml'
+            archiveArtifacts artifacts: '**/test-results.xml', allowEmptyArchive: true
+            allure([
+                includeProperties: false,
+                jdk: '',
+                results: [[path: 'lesson_31/allure-results']]
+            ])
+            emailext(
+                from: 'saydanya@gmail.com',
+                to: 'online@ithillel.ua',
+                subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
+                body: "Build completed successfully! Check details at ${env.BUILD_URL}"
+            )
+        }
+    }
+}
