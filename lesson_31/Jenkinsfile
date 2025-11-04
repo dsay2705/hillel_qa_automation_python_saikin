@@ -46,13 +46,11 @@ pip install allure-pytest'''
         always {
             junit '**/test-results.xml'
             archiveArtifacts artifacts: '**/test-results.xml', allowEmptyArchive: true
-            script {
-                sh '''#!/bin/bash
-source venv/bin/activate
-pip install allure-commandline || true
-allure generate lesson_31/allure-results --clean -o lesson_31/allure-report || true'''
-            }
-            archiveArtifacts artifacts: 'lesson_31/allure-report/**', allowEmptyArchive: true
+            allure([
+                includeProperties: false,
+                jdk: '',
+                results: [[path: 'lesson_31/allure-results']]
+            ])
             emailext (
                 to: 'saydanya@gmail.com',
                 subject: "Jenkins Pipeline: ${currentBuild.fullDisplayName} - ${currentBuild.currentResult}",
