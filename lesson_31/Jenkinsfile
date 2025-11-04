@@ -53,6 +53,7 @@ pip install allure-pytest'''
             ])
             emailext (
                 to: 'saydanya@gmail.com',
+                from: 'saydanya@gmail.com',
                 subject: "Jenkins Pipeline: ${currentBuild.fullDisplayName} - ${currentBuild.currentResult}",
                 body: """Pipeline finished with status: ${currentBuild.currentResult}\nSee details at: ${env.BUILD_URL}"""
             )
