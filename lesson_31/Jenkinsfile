@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'lesson_31_test'
-            args '-u root'
-        }
-    }
+    agent any
     
     options {
         buildDiscarder(logRotator(numToKeepStr: '10'))
@@ -18,16 +13,21 @@ pipeline {
         }
         stage('Install requirements') {
             steps {
-                sh '''#!/bin/bash
-pip install --upgrade pip
-pip install -r lesson_31/requirements.txt
-'''
+                script {
+                    docker.image('lesson_31_test').inside('-u root') {
+                        sh 'pip install --upgrade pip'
+                        sh 'pip install -r lesson_31/requirements.txt'
+                    }
+                }
             }
         }
         stage('Run tests') {
             steps {
-                sh '''#!/bin/bash
-pytest lesson_31/tests --maxfail=1 --disable-warnings --tb=short --alluredir=lesson_31/allure-results'''
+                script {
+                    docker.image('lesson_31_test').inside('-u root') {
+                        sh 'pytest lesson_31/tests --maxfail=1 --disable-warnings --tb=short --alluredir=lesson_31/allure-results'
+                    }
+                }
             }
         }
     }
