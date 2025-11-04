@@ -1,0 +1,11 @@
+jenkins:
+  systemMessage: "Jenkins configured as code!"
+  mailer:
+    smtpHost: "smtp.gmail.com"
+    smtpPort: "465"
+    useSsl: true
+    authentication:
+      username: "saydanya@gmail.com"
+      password: "${EMAIL_PASS}"
+    replyToAddress: "saydanya@gmail.com"
+    charset: "UTF-8"

@@ -1,4 +1,6 @@
-# requirements.txt for lesson_28 tests
 pytest
 selenium
-# Add any other dependencies required by your tests or pages
+pytest-xdist
+pytest-html
+pytest-mock
+python-dotenv
