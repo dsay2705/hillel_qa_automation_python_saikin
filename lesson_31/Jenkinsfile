@@ -13,25 +13,18 @@ pipeline {
         }
         stage('Install requirements') {
             steps {
-                script {
-                    docker.image('lesson_31_test').inside('-u root') {
-                        sh '''#!/bin/bash
-pip install --upgrade pip
-pip install -r lesson_31/requirements.txt
+                sh '''
+docker run --rm -v "$PWD":/workspace -w /workspace/lesson_31 -u root lesson_31_test \
+    bash -c "pip install --upgrade pip && pip install -r requirements.txt"
 '''
-                    }
-                }
             }
         }
         stage('Run tests') {
             steps {
-                script {
-                    docker.image('lesson_31_test').inside('-u root') {
-                        sh '''#!/bin/bash
-pytest lesson_31/tests --maxfail=1 --disable-warnings --tb=short --alluredir=lesson_31/allure-results
+                sh '''
+docker run --rm -v "$PWD":/workspace -w /workspace/lesson_31 -u root lesson_31_test \
+    bash -c "pytest tests --maxfail=1 --disable-warnings --tb=short --alluredir=allure-results"
 '''
-                    }
-                }
             }
         }
     }
