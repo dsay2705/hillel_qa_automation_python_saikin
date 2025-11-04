@@ -15,8 +15,10 @@ pipeline {
             steps {
                 script {
                     docker.image('lesson_31_test').inside('-u root') {
-                        sh 'pip install --upgrade pip'
-                        sh 'pip install -r lesson_31/requirements.txt'
+                        sh '''#!/bin/bash
+pip install --upgrade pip
+pip install -r lesson_31/requirements.txt
+'''
                     }
                 }
             }
@@ -25,7 +27,9 @@ pipeline {
             steps {
                 script {
                     docker.image('lesson_31_test').inside('-u root') {
-                        sh 'pytest lesson_31/tests --maxfail=1 --disable-warnings --tb=short --alluredir=lesson_31/allure-results'
+                        sh '''#!/bin/bash
+pytest lesson_31/tests --maxfail=1 --disable-warnings --tb=short --alluredir=lesson_31/allure-results
+'''
                     }
                 }
             }
